@@ -1,0 +1,56 @@
+.background{
+    background-image: url('../../assets/img/home-background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    width: 100vw;
+}
+
+.instructions{
+    background-color: rgba($off-white, 0.8);
+    border: 1px solid darken($off-white, 10%);
+    border-radius: 5px;
+    margin-top: $lg;
+    margin-bottom: $lg;
+    padding: $sm $lg;
+
+    
+
+    h1 {
+        color: $off-black;
+        font-size: $md;
+        text-align: center;
+    }
+
+    .lifeline-icon{
+        position: relative;
+        top: 7px;
+        color: $green;
+        cursor: pointer;
+    }
+
+    .browser-default{
+        padding-left: 30px;
+        margin-top: 10px;
+        margin-bottom: 15px;
+    }
+
+    img {
+        width: 80%;
+        height: 50%;
+        padding-top: 7px;
+        padding-bottom: 7px;
+    }
+}
+
+.bottom-links{
+    margin-bottom: 1rem;
+}
+
+@media (max-width: $md-breakpoint){
+    .instructions{
+        width: 100% !important;
+        height: 150% !important;
+    }
+}
