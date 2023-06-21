@@ -1,22 +1,59 @@
 import React, { Component, Fragment} from "react";
 import { Helmet } from "react-helmet";
 
+import questions from "../../questions.json"
+import isEmpty from "../../utils/is-empty";
+
 import { BiCircleHalf } from 'react-icons/bi';
 import { HiOutlineLightBulb} from 'react-icons/hi';
 import {AiOutlineClockCircle} from 'react-icons/ai'
 class Play extends Component {
-    // constructor (props) {
-    //     super(props);
-        
-    // }
+     constructor (props) {
+        super(props);
+        this.state = {
+            questions,
+            currentQuestion: {},
+            nextQuestion: {},
+            previousQuestion: {},
+            answer: '',
+            numberOfQuestions: 0,
+            numberOfAnsweredQuestion: 0,
+            currentQuestionIndex: 0,
+            score: 0,
+            correctAnswers: 0,
+            wrongAnswers: 0,
+            hints: 5,
+            fiftyFifty: 2,
+            usedFiftyFifty: false,
+            time: {}
+        };
+     }
 
-    increaseCount = () => {
-        this.setState({
-            counter: 5
-        });
-    }
+     componentDidMount () {
+        const { questions, currentQuestion, nextQuestion, previousQuestion } = this.state;
+        this.displayQuestions(questions, currentQuestion, nextQuestion, previousQuestion);
+     }
+
+     displayQuestions = (questions = this.state.questions, currentQuestion, nextQuestion, previousQuestion) => {;
+        let {currentQuestionIndex} = this.state;
+        if (!isEmpty(this.state.questions)) {
+            questions = this.state.questions;
+            currentQuestion = questions[currentQuestionIndex];
+            nextQuestion = questions[currentQuestionIndex + 1];
+            previousQuestion = questions[currentQuestionIndex - 1];
+            const answer = currentQuestion.answer;
+            this.setState({
+                currentQuestion,
+                nextQuestion,
+                previousQuestion,
+                answer
+            });
+        }
+    };
 
     render () {
+        const { currentQuestion } = this.state;
+        console.log(questions)
         return (
             <Fragment>
                 <Helmet><title>Quiz Page</title></Helmet>
@@ -36,14 +73,14 @@ class Play extends Component {
                             <span className="right">2:15</span><span><AiOutlineClockCircle size='24px' className='clock-icon'/></span>
                         </p>
                     </div>
-                    <h5>The work made by a force is maximum and negative when:</h5>
+                    <h5>{currentQuestion.question}</h5>
                     <div className="options-container">
-                        <p className="option">Force and displacement are parallel and opposite in direction</p>
-                        <p className="option">Force and displacement are parallel and in the same direction</p>
+                        <p className="option">{currentQuestion.optionA}</p>
+                        <p className="option">{currentQuestion.optionB}</p>
                     </div>
                     <div className="options-container">
-                        <p className="option">Force and displacement are perpendicular</p>
-                        <p className="option">Force and displacement form any angle</p>
+                        <p className="option">{currentQuestion.optionC}</p>
+                        <p className="option">{currentQuestion.optionD}</p>
                     
                     </div>
 
