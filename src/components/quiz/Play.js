@@ -4,10 +4,15 @@ import M from 'materialize-css';
 
 import questions from "../../questions.json"
 import isEmpty from "../../utils/is-empty";
+import correctNotification from '../../assets/audio/correct-answer.mp3';
+import wrongNotification from '../../assets/audio/wrong-answer.mp3';
+import buttonSound from '../../assets/audio/button-sound.mp3';
 
 import { BiCircleHalf } from 'react-icons/bi';
 import { HiOutlineLightBulb} from 'react-icons/hi';
 import {AiOutlineClockCircle} from 'react-icons/ai'
+
+
 class Play extends Component {
      constructor (props) {
         super(props);
@@ -47,6 +52,7 @@ class Play extends Component {
                 currentQuestion,
                 nextQuestion,
                 previousQuestion,
+                numberOfQuestions: questions.length,
                 answer
             });
         }
@@ -54,11 +60,21 @@ class Play extends Component {
 
     handleOptionClick = (e) => {
         if (e.target.innerHTML.toLowerCase() === this.state.answer.toLowerCase()) {
+            document.getElementById('correct-sound').play();
             this.correctAnswer();
         } else {
+            document.getElementById('wrong-sound').play();
             this.wrongAnswer();
         }
     }
+
+    handleButtonClick = () => {
+        this.playButtonSound();
+    };
+
+    playButtonSound = () => {
+        document.getElementById('button-sound').play();
+    };
 
     correctAnswer = () => {
         M.toast({
@@ -72,7 +88,9 @@ class Play extends Component {
             currentQuestionIndex: prevState.currentQuestionIndex + 1,
             numberOfAnsweredQuestions: prevState.numberOfAnsweredQuestions + 1
 
-        }));
+        }), () => {
+            this.displayQuestions(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
+        });
     }
 
     wrongAnswer = () => {
@@ -89,16 +107,23 @@ class Play extends Component {
 
 
 
-        }));
+        }), () => {
+            this.displayQuestions(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
+        });
     }
 
 
     render () {
-        const { currentQuestion } = this.state;
-        console.log(questions)
+        const { currentQuestion, currentQuestionIndex, numberOfQuestions } = this.state;
+
         return (
             <Fragment>
                 <Helmet><title>Quiz Page</title></Helmet>
+                <Fragment>
+                <audio id="correct-sound" src={correctNotification}></audio>
+                <audio id="wrong-sound" src={wrongNotification}></audio>
+                <audio id="button-sound" src={buttonSound}></audio>
+                </Fragment>
                 <div className="questions">
                     <h2>Quiz Mode</h2>
                     <div className="lifeline-container">
@@ -111,7 +136,7 @@ class Play extends Component {
                     </div>
                     <div>
                         <p>
-                            <span className="left">1 of 15</span>
+                            <span className="left">{currentQuestionIndex + 1} of {numberOfQuestions} </span>
                             <span className="right">2:15</span><span><AiOutlineClockCircle size='24px' className='clock-icon'/></span>
                         </p>
                     </div>
@@ -127,9 +152,9 @@ class Play extends Component {
                     </div>
 
                     <div className="button-container">
-                    <button>Previus</button>
-                    <button>Next </button>
-                    <button>Quit </button>
+                    <button onClick={this.handleButtonClick} >Previus</button>
+                    <button onClick={this.handleButtonClick} >Next </button>
+                    <button onClick={this.handleButtonClick} >Quit </button>
                     </div>
                 </div>
             </Fragment>
