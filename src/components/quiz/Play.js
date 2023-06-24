@@ -1,6 +1,8 @@
 import React, { Component, Fragment} from "react";
 import { Helmet } from "react-helmet";
+import { useNavigate } from "react-router-dom";
 import M from 'materialize-css';
+
 
 import questions from "../../questions.json"
 import isEmpty from "../../utils/is-empty";
@@ -31,6 +33,7 @@ class Play extends Component {
             hints: 5,
             fiftyFifty: 2,
             usedFiftyFifty: false,
+            previousRandomNumbers: [],
             time: {}
         };
      }
@@ -53,7 +56,10 @@ class Play extends Component {
                 nextQuestion,
                 previousQuestion,
                 numberOfQuestions: questions.length,
-                answer
+                answer,
+                previousRandomNumbers: []
+            }, () => {
+                this.showOptions();
             });
         }
     };
@@ -68,8 +74,55 @@ class Play extends Component {
         }
     }
 
-    handleButtonClick = () => {
+    handleNextButtonClick = () => {
         this.playButtonSound();
+        if (this.state.nextQuestion !== undefined) {
+            this.setState(prevState => ({
+                currentQuestionIndex: prevState.currentQuestionIndex + 1
+            }), () => {
+                this.displayQuestions(this.state.state, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
+            });
+        }
+    };
+
+    handlePreviousButtonClick = () => {
+        this.playButtonSound();
+        if (this.state.previousQuestion !== undefined) {
+            this.setState(prevState => ({
+                currentQuestionIndex: prevState.currentQuestionIndex - 1
+            }), () => {
+                this.displayQuestions(this.state.state, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
+            });
+        }
+    };
+
+    handleQuitButtonClick = () => {
+        this.playButtonSound();
+        if (window.confirm('Are you sure you want to quit?')) {
+            let navigate = useNavigate();
+            navigate('/');
+        }
+    
+    };
+
+    handleButtonClick = (e) => {
+        switch (e.target.id) {
+            case 'next-button':
+                this.handleNextButtonClick();
+                break;
+
+            case 'previous-button':
+                this.handlePreviousButtonClick();
+                break;
+
+            case 'quit-button':
+                this.handleQuitButtonClick();
+                break;
+
+           default:
+                break; 
+        }
+
     };
 
     playButtonSound = () => {
@@ -103,18 +156,101 @@ class Play extends Component {
         this.setState(prevState => ({
             wrongAnswers: prevState.wrongAnswers + 1,
             currentQuestionIndex: prevState.currentQuestionIndex + 1,
-            numberOfAnsweredQuestions: prevState.numberOfAnsweredQuestions + 1,
-
-
-
+            numberOfAnsweredQuestions: prevState.numberOfAnsweredQuestions + 1
         }), () => {
             this.displayQuestions(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
         });
     }
 
+    showOptions = () => {
+        const options = Array.from(document.querySelectorAll('.option'));
+
+        options.forEach(option => {
+            option.style.visibility = 'visible';
+        });
+
+        this.setState({
+            usedFiftyFifty: false
+        })
+    }
+
+    handleHints = () => {
+        if (this.state.hints > 0){
+            const options = Array.from(document.querySelectorAll('.option'));
+       let indexOfAnswers;
+
+       options.forEach((option, index) => {
+        if (option.innerHTML.toLocaleLowerCase() === this.state.answer.toLocaleLowerCase()) {
+            indexOfAnswers = index;
+        }
+       });
+
+       while (true) {
+        const randomNumber = Math.round(Math.random() * 3);
+        if (randomNumber !== indexOfAnswers && !this.state.previousRandomNumbers.includes(randomNumber)) {
+            options.forEach((option, index) => {
+                if (index === randomNumber) {
+                    option.style.visibility = 'hidden';                 
+                    this.setState((prevState) => ({
+                        hints: prevState.hints - 1,
+                        previousRandomNumbers: prevState.previousRandomNumbers.concat(randomNumber)
+                    }));
+                }
+            });
+            break;
+        }
+        if (this.state.previousRandomNumbers.length >= 3) break;
+       }
+        }
+       
+
+    }
+
+    handleFiftyFifty = () => {
+        if (this.state.fiftyFifty > 0 && this.state.usedFiftyFifty === false) {
+            const options = document.querySelectorAll('.option');
+            const randomNumbers = [];
+            let indexOfAnswer;
+
+            options.forEach((option, index) => {
+                if (option.innerHTML.toLowerCase() === this.state.answer.toLowerCase()) {
+                    indexOfAnswer = index;
+                }
+            });
+            
+            let count = 0;
+            do {
+                const randomNumber = Math.round(Math.random() * 3);
+                if (randomNumber !== indexOfAnswer){
+                    if (randomNumbers.length < 2 && !randomNumbers.includes(randomNumber) && !randomNumbers.includes(indexOfAnswer)) {
+                        randomNumbers.push(randomNumber);
+                        count ++;
+                    } else {
+                        while (true) {
+                            const newRandomNumber = Math.round(Math.random() * 3);
+                            if (!randomNumbers.includes(newRandomNumber) && newRandomNumber !== indexOfAnswer) {
+                                randomNumbers.push(newRandomNumber);
+                                count ++;
+                                break;
+                            }
+                        }
+                    }
+                }
+            } while (count < 2);
+            options.forEach((option, index) => {
+                if (randomNumbers.includes(index)) {
+                    option.style.visibility = 'hidden';
+                }
+            });
+            this.setState(prevState => ({
+                fiftyFifty: prevState.fiftyFifty - 1,
+                usedFiftyFifty: true
+            }));
+        }
+    }
 
     render () {
-        const { currentQuestion, currentQuestionIndex, numberOfQuestions } = this.state;
+        const { currentQuestion, currentQuestionIndex, fiftyFifty, hints, numberOfQuestions } = this.state;
 
         return (
             <Fragment>
@@ -128,10 +264,12 @@ class Play extends Component {
                     <h2>Quiz Mode</h2>
                     <div className="lifeline-container">
                         <p>
-                            <span><BiCircleHalf size='24px' className='lifeline-icon'/></span><span className="lifeline">2</span>
+                            <span><BiCircleHalf size='24px' className='lifeline-icon' onClick={this.handleFiftyFifty}/></span>
+                            <span className="lifeline">{fiftyFifty}</span>
                         </p>
                         <p>
-                            <span><HiOutlineLightBulb size='24px' className='bulb-icon'/></span><span className="lifeline">5</span>
+                            <span><HiOutlineLightBulb size='24px' className='lifeline-icon'  onClick={this.handleHints} /></span>
+                            <span className="lifeline">{hints}</span>
                         </p>
                     </div>
                     <div>
@@ -152,9 +290,9 @@ class Play extends Component {
                     </div>
 
                     <div className="button-container">
-                    <button onClick={this.handleButtonClick} >Previus</button>
-                    <button onClick={this.handleButtonClick} >Next </button>
-                    <button onClick={this.handleButtonClick} >Quit </button>
+                    <button id="previous-button" onClick={this.handleButtonClick}>Previus</button>
+                    <button id="next-button" onClick={this.handleButtonClick}>Next </button>
+                    <button id="quit-button" onClick={this.handleButtonClick}>Quit </button>
                     </div>
                 </div>
             </Fragment>

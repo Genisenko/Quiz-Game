@@ -21,6 +21,16 @@
         top: -7px;
     }
 
+    .lifeline-icon{
+        cursor: pointer;
+        color: $green;
+    }
+
+    .lifeline-icon:hover{
+        color: darken($orange, 10%);
+        background: none;
+    }
+
     h5{
         font-size: 1.2rem;
         margin-bottom: $lg;
@@ -96,4 +106,3 @@
 .button-container button:last-child:hover {
     background-color: darken($red, 20%);
 }
-
