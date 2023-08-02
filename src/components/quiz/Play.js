@@ -1,8 +1,8 @@
 import React, { Component, Fragment} from "react";
 import { Helmet } from "react-helmet";
-import { useNavigate } from "react-router-dom";
 import M from 'materialize-css';
 import classnames from "classnames";
+import withRouter from "../../withRouter"
 
 
 import questions from "../../questions.json"
@@ -14,6 +14,8 @@ import buttonSound from '../../assets/audio/button-sound.mp3';
 import { BiCircleHalf } from 'react-icons/bi';
 import { HiOutlineLightBulb} from 'react-icons/hi';
 import {AiOutlineClockCircle} from 'react-icons/ai'
+
+
 
 
 class Play extends Component {
@@ -39,13 +41,20 @@ class Play extends Component {
             previousRandomNumbers: [],
             time: {}
         };
-        this.interval = null
+        this.interval = null;
+        this.correctSound = React.createRef();
+        this.wrongSound = React.createRef();
+        this.buttonSound = React.createRef();
      }
 
      componentDidMount () {
         const { questions, currentQuestion, nextQuestion, previousQuestion } = this.state;
         this.displayQuestions(questions, currentQuestion, nextQuestion, previousQuestion);
         this.startTimer();
+     }
+
+     componentWillUnmount () {
+        clearInterval(this.interval);
      }
 
      displayQuestions = (questions = this.state.questions, currentQuestion, nextQuestion, previousQuestion) => {;
@@ -70,15 +79,17 @@ class Play extends Component {
         }
     };
 
+
     handleOptionClick = (e) => {
         if (e.target.innerHTML.toLowerCase() === this.state.answer.toLowerCase()) {
-            document.getElementById('correct-sound').play();
+            this.correctSound.current.play();
             this.correctAnswer();
         } else {
-            document.getElementById('wrong-sound').play();
+            this.wrongSound.current.play();
             this.wrongAnswer();
         }
     }
+
 
     handleNextButtonClick = () => {
         this.playButtonSound();
@@ -105,7 +116,7 @@ class Play extends Component {
     handleQuitButtonClick = () => {
         this.playButtonSound();
         if (window.confirm('Are you sure you want to quit?')) {
-            let navigate = useNavigate();
+            const { navigate } = this.props
             navigate('/');
         }
     
@@ -132,7 +143,7 @@ class Play extends Component {
     };
 
     playButtonSound = () => {
-        document.getElementById('button-sound').play();
+        this.buttonSound.current.play();
     };
 
     correctAnswer = () => {
@@ -148,7 +159,11 @@ class Play extends Component {
             numberOfAnsweredQuestions: prevState.numberOfAnsweredQuestions + 1
 
         }), () => {
-            this.displayQuestions(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
+            if (this.state.nextQuestion === undefined) {
+                this.endGame();
+            } else {
+                this.displayQuestions(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
+            }
         });
     }
 
@@ -164,7 +179,11 @@ class Play extends Component {
             currentQuestionIndex: prevState.currentQuestionIndex + 1,
             numberOfAnsweredQuestions: prevState.numberOfAnsweredQuestions + 1
         }), () => {
-            this.displayQuestions(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
+            if (this.state.nextQuestion === undefined) {
+                this.endGame();
+            } else {
+                this.displayQuestions(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion);
+            }
         });
     }
 
@@ -272,8 +291,7 @@ class Play extends Component {
                         seconds: 0
                     }
                 }, () => {
-                    alert('Quiz has ended!');
-                    this.props.history.push('/');
+                    this.endGame();
                 });
             } else {
                 this.setState({
@@ -308,6 +326,26 @@ class Play extends Component {
         }
     }
 
+    endGame = () => {
+        const { navigate } = this.props
+
+        alert('Quiz has ended!');
+        const { state } = this;
+        const playerStats = {
+            score: state.score,
+            numberOfQuestions: state.numberOfQuestions,
+            numberOfAnsweredQuestions: state.numberOfAnsweredQuestions,
+            correctAnswers: state.correctAnswers,
+            wrongAnswers: state.wrongAnswers,
+            fiftyFiftyUsed: 2 - state.fiftyFifty,
+            hintsUsed: 5 - state.hints
+        };
+        console.log(playerStats)
+        setTimeout(() => {
+            navigate('/play/quizSummary', {state:{playerStats}});
+        }, 1000);
+    }
+
     render () {
         const { currentQuestion,
                 currentQuestionIndex,
@@ -320,9 +358,9 @@ class Play extends Component {
             <Fragment>
                 <Helmet><title>Quiz Page</title></Helmet>
                 <Fragment>
-                <audio id="correct-sound" src={correctNotification}></audio>
-                <audio id="wrong-sound" src={wrongNotification}></audio>
-                <audio id="button-sound" src={buttonSound}></audio>
+                <audio ref={this.correctSound} src={correctNotification}></audio>
+                <audio ref={this.wrongSound} src={wrongNotification}></audio>
+                <audio ref={this.buttonSound} src={buttonSound}></audio>
                 </Fragment>
                 <div className="questions">
                     <h2>Quiz Mode</h2>
@@ -374,4 +412,4 @@ class Play extends Component {
     }
 }
 
-export default Play;
+export default withRouter(Play);
