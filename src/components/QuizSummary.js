@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 
 function QuizSummary(props) {
     const [state, setState] = useState({
@@ -15,13 +16,28 @@ function QuizSummary(props) {
 
     const location = useLocation();
     const playerStats = location.state.playerStats;
-    console.log(playerStats);
 
     // Actualizar el estado 'state' con los valores recibidos de 'playerStats'
     useState(() => {
         setState(playerStats);
     }, [playerStats]);
-    
+
+    // Calcular el porcentaje de aciertos
+    const successRate = (state.score / state.numberOfQuestions * 100).toFixed(2);
+
+    let resultMessage = '';
+    if (successRate <= 30) {
+        resultMessage = 'You need more practice!';
+    } else if (successRate <= 50) {
+        resultMessage = 'Better luck next time';
+    } else if (successRate <= 70) {
+        resultMessage = 'You can do better!';
+    } else if (successRate <= 84) {
+        resultMessage = 'You did great!';
+    } else {
+        resultMessage = "You're an absolute genius!";
+    }
+
     return (
         <div>
             <Helmet>
@@ -29,14 +45,49 @@ function QuizSummary(props) {
                     Quiz Summary
                 </title>
             </Helmet>
-            <h1>Hello from Quiz QuizSummary</h1>
-            <p>Score: {(state.score / state.numberOfQuestions * 100).toFixed(2) }%</p>
-            <p>Number of Questions: {state.numberOfQuestions}</p>
-            <p>Number of Answered Questions: {state.numberOfAnsweredQuestions}</p>
-            <p>Correct Answers: {state.correctAnswers}</p>
-            <p>Wrong Answers: {state.wrongAnswers}</p>
-            <p>Used Hints: {state.hintsUsed || 0}</p>
-            <p>Used Fifty-Fifty: {state.fiftyFiftyUsed || 0}</p>
+                <div>
+                    <h1>{resultMessage}</h1>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>Score:</td>
+                                <td>{successRate}%</td>
+                            </tr>
+                            <tr>
+                                <td>Number of Questions:</td>
+                                <td>{state.numberOfQuestions}</td>
+                            </tr>
+                            <tr>
+                                <td>Number of Answered Questions:</td>
+                                <td>{state.numberOfAnsweredQuestions}</td>
+                            </tr>
+                            <tr>
+                                <td>Correct Answers:</td>
+                                <td>{state.correctAnswers}</td>
+                            </tr>
+                            <tr>
+                                <td>Wrong Answers:</td>
+                                <td>{state.wrongAnswers}</td>
+                            </tr>
+                            <tr>
+                                <td>Used Hints:</td>
+                                <td>{state.hintsUsed || 0}</td>
+                            </tr>
+                            <tr>
+                                <td>Used Fifty-Fifty:</td>
+                                <td>{state.fiftyFiftyUsed || 0}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <span>
+                        <ul>
+                            <li><Link className='play-button' to="/play/instructions">Play Again</Link></li>
+                        </ul>
+                        <ul>
+                            <li><Link className='home-button' to="/">Back to home</Link></li>
+                        </ul>
+                    </span>
+                </div>
         </div>
     );
 }
