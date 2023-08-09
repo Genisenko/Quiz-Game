@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/Quiz-Game/static/css/main.21b4fab0.css",
+    "main.js": "/Quiz-Game/static/js/main.a3e16161.js",
+    "static/media/home-background.jpg": "/Quiz-Game/static/media/home-background.ff1f4fca1ff548ca6036.jpg",
+    "static/media/img2.PNG": "/Quiz-Game/static/media/img2.253ae10ed6f70346ec84.PNG",
+    "static/media/img1.PNG": "/Quiz-Game/static/media/img1.948eb59d603891c3742d.PNG",
+    "static/media/img4.PNG": "/Quiz-Game/static/media/img4.d6ab58c8f257d78beb37.PNG",
+    "static/media/img3.PNG": "/Quiz-Game/static/media/img3.442f506dda48061d168e.PNG",
+    "static/media/wrong-answer.mp3": "/Quiz-Game/static/media/wrong-answer.e08b616b298a5da45785.mp3",
+    "static/media/button-sound.mp3": "/Quiz-Game/static/media/button-sound.8277ab8cffed4aaa3b2e.mp3",
+    "static/media/correct-answer.mp3": "/Quiz-Game/static/media/correct-answer.21e0f5870e7ee91a3cb6.mp3",
+    "index.html": "/Quiz-Game/index.html",
+    "main.21b4fab0.css.map": "/Quiz-Game/static/css/main.21b4fab0.css.map",
+    "main.a3e16161.js.map": "/Quiz-Game/static/js/main.a3e16161.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.21b4fab0.css",
+    "static/js/main.a3e16161.js"
+  ]
+}
