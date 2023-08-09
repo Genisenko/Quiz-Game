@@ -19,11 +19,11 @@ const Home = () => (
             <li><Link className='play-button' to="/play/instructions">Play</Link></li>
           </ul>
         </div>
-        <div className='auth-container'>
+        {/* <div className='auth-container'>
         <Link to="/login" className='auth-buttons' id='login-button'>Login</Link>
         <Link to="/register" className='auth-buttons' id='signup-button' >Register</Link>
           
-        </div>
+        </div> */}
 
       </section>
     </div>

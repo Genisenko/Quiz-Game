@@ -1,0 +1,76 @@
+.summary-pg{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.button-container-summary{
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: $lg;
+    margin-bottom: $lg;
+
+}
+
+#play-button{
+    background-color: $red;
+}
+
+#play-button:hover{
+    background-color: darken($red, 10%);
+    box-shadow: $shadow;
+
+}
+
+#home-button{
+    background-color: $blue;
+}
+
+#home-button:hover{
+    background-color: darken($blue, 10%);
+    box-shadow: $shadow;
+
+}
+
+.buttons{
+    color: #fff;
+    cursor: pointer;
+    border-radius: $button-radius;
+    padding: 2px;
+    text-align: center;
+    transition: 0.3s linear all;
+    width: 20%;
+}
+
+.end-msg{
+    color: $green;
+    text-align: center;
+}
+
+.result-msg{
+    color: grey;
+    text-align: center;
+}
+
+.score-msg{
+    color: $blue;
+    text-align: center;
+}
+
+.summary-table{
+    width: 70%;
+    background-color: rgba(51, 51, 51, 0.1);
+    border-radius: 7px;
+}
+
+.summary-table tr{
+    display: flex;
+    justify-content: space-between;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.summary-span{
+    width: 100%;
+}

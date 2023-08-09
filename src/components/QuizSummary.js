@@ -45,14 +45,12 @@ function QuizSummary(props) {
                     Quiz Summary
                 </title>
             </Helmet>
-                <div>
-                    <h1>{resultMessage}</h1>
-                    <table>
+                <div className='summary-pg'>
+                    <h1 className='end-msg'>Congratulations you made it!</h1>
+                    <h3 className='result-msg'>{resultMessage}</h3>
+                    <h2 className='score-msg'>Your score: {successRate}%</h2>
+                    <table className='summary-table'>
                         <tbody>
-                            <tr>
-                                <td>Score:</td>
-                                <td>{successRate}%</td>
-                            </tr>
                             <tr>
                                 <td>Number of Questions:</td>
                                 <td>{state.numberOfQuestions}</td>
@@ -79,13 +77,11 @@ function QuizSummary(props) {
                             </tr>
                         </tbody>
                     </table>
-                    <span>
-                        <ul>
-                            <li><Link className='play-button' to="/play/instructions">Play Again</Link></li>
-                        </ul>
-                        <ul>
-                            <li><Link className='home-button' to="/">Back to home</Link></li>
-                        </ul>
+                    <span className='summary-span'>
+                        <div className='button-container-summary'>
+                            <Link id='play-button' className='buttons' to="/play/quiz">Play Again</Link>
+                            <Link id='home-button' className='buttons' to="/">Back to home</Link>
+                        </div>
                     </span>
                 </div>
         </div>

@@ -8,7 +8,10 @@ import { HiOutlineLightBulb} from 'react-icons/hi';
 //Here we import the imagas that we will need, 
 //at the moment we don't have any since we will capture it
 //once we will have the app working 
-import answer from '../../assets/img/quiz.PNG';
+import img1 from '../../assets/img/img1.PNG';
+import img2 from '../../assets/img/img2.PNG';
+import img3 from '../../assets/img/img3.PNG';
+import img4 from '../../assets/img/img4.PNG';
 
 const QuizInstructions = () => (
     <Fragment>
@@ -22,11 +25,11 @@ const QuizInstructions = () => (
                     <li>Each game consists in 15 questions.</li>
                     <li>
                         Every question contains 4 options.
-                        <br/><img src={answer} alt='Quiz App options example'/>
+                        <br/><img src={img1} alt='Quiz App options example'/>
                     </li>
                     <li>
                         Select the option wich best answers the question by clicking (or selecting) it.
-                        <br/><img src={answer} alt='Quiz App answer example'/>
+                        <br/><img src={img2} alt='Quiz App answer example'/>
                     </li>
                     <li>
                         Each game has 2 lifelines normely.
@@ -39,13 +42,13 @@ const QuizInstructions = () => (
                         Selecting a 50-50 lifeline by clicking the icon  
                         <BiCircleHalf size='24px' className='lifeline-icon'/>
                         will remove 2 wrong ansewers, leaving the correct answer and one wrong answer.
-                    <br/> <img src={answer} alt='Quiz App Fifty example' /> 
+                    <br/> <img src={img3} alt='Quiz App Fifty example' /> 
                     </li>
                     <li>
                         Using a hint by clicking the icon
                         <HiOutlineLightBulb size='24px' className='lifeline-icon'/> 
                         will remove one wrong answer leaving two wrong answers and one correct answer. You can use as many hints as possible on a single question.
-                        <br/><img src={answer} alt='Quiz App Hint example' />
+                        <br/><img src={img4} alt='Quiz App Hint example' />
                     </li>
                     <li>
                         Feel free to quit (or ritere from) the game at any time. In that case your score will be revealed afterwards.
